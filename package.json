@@ -1,0 +1,26 @@
+{
+    "name": "torrenttv-web",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "directories": {
+        "test": "tests"
+    },
+    "scripts": {
+        "build": "webpack",
+        "watch": "webpack -w"
+    },
+    "devDependencies": {
+        "@types/react": "^16.9.29",
+        "@types/react-dom": "^16.9.5",
+        "source-map-loader": "^0.2.4",
+        "ts-loader": "^6.2.2",
+        "typescript": "^3.8.3",
+        "webpack": "^4.42.1",
+        "webpack-cli": "^3.3.11"
+    },
+    "dependencies": {
+        "react": "^16.13.1",
+        "react-dom": "^16.13.1"
+    }
+}
