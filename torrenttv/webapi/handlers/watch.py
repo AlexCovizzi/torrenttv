@@ -5,6 +5,7 @@ from aiohttp import web
 async def show(req):
     session = req.app["data"].session
     info_hash = req.match_info.get("info_hash", None)
+    file_idx = int(req.match_info.get("file_idx")) or 0
     # if an infohash is provided return the matching torrent
     # otherwise return the first torrent in the session
     if info_hash:
@@ -18,7 +19,9 @@ async def show(req):
         else:
             torrent = torrents[0]
 
-    f = [_file for _file in torrent.files if _file.mime_type.startswith("video")][0]
+    f = [_file for _file in torrent.files if _file.mime_type.startswith("video")][
+        file_idx
+    ]
 
     if req.http_range.start is None:
         response = web.Response()

@@ -12,7 +12,7 @@ from .handlers import (
     torrent_files_show,
     torrent_files_update,
     search,
-    details
+    details,
 )
 
 
@@ -20,6 +20,7 @@ routes = RouteTableDef()
 
 routes.get("/watch", watch_show)
 routes.get("/watch/{info_hash}", watch_show)
+routes.get("/watch/{info_hash}/{file_idx}", watch_show)
 
 routes.get("/api/v1/session", session_show)
 routes.post("/api/v1/session", session_update)
@@ -31,8 +32,10 @@ routes.patch("/api/v1/session/torrents/{info_hash}", torrents_update)
 routes.delete("/api/v1/session/torrents/{info_hash}", torrents_destroy)
 
 routes.get("/api/v1/session/torrents/{info_hash}/files", torrent_files_index)
-routes.get("/api/v1/session/torrents/{info_hash}/files/{idx}", torrent_files_show)
-routes.post("/api/v1/session/torrents/{info_hash}/files/{idx}", torrent_files_update)
+routes.get("/api/v1/session/torrents/{info_hash}/files/{file_idx}", torrent_files_show)
+routes.post(
+    "/api/v1/session/torrents/{info_hash}/files/{file_idx}", torrent_files_update
+)
 
 # NOTE: the search api needs revising
 routes.get("/api/v1/search", search)

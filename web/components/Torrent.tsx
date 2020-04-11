@@ -1,9 +1,10 @@
 import * as React from "react";
+import { TorrentFile } from "./TorrentFile";
 
 
 export interface TorrentProps {
     //onWatch: (infoHash: string) => void;
-    onRemove: (infoHash: string) => void;
+    onRemove: (infoHash: string, deleteFiles: boolean) => void;
     infoHash: string;
     name: string;
     progress: string;
@@ -12,6 +13,9 @@ export interface TorrentProps {
 
 
 export interface TorrentState {
+    deleteFiles: boolean;
+    showFiles: boolean;
+    files: any[];
 }
 
 
@@ -20,13 +24,50 @@ export class Torrent extends React.Component<TorrentProps, TorrentState> {
     constructor(props: Readonly<TorrentProps>) {
         super(props)
 
-        this.state = { };
+        this.state = { deleteFiles: false, showFiles: false, files: [] };
+    }
+
+    handleClickShowFiles(event: React.MouseEvent) {
+        event.preventDefault();
+        let showFiles = this.state.showFiles;
+        this.setState({showFiles: !showFiles});
+
+        if (this.state.files.length === 0) {
+            this.fetchFiles();
+        }
     }
 
     handleClickRemove(event: React.MouseEvent) {
         event.preventDefault();
         let infoHash = this.props.infoHash;
-        this.props.onRemove(infoHash);
+        let deleteFiles = this.state.deleteFiles;
+        this.props.onRemove(infoHash, deleteFiles);
+    }
+
+    handleChangeCheckbox(event: React.ChangeEvent<HTMLInputElement>) {
+        this.setState({ deleteFiles: event.target?.checked });
+    }
+
+    fetchFiles() {
+        fetch(`/api/v1/session/torrents/${this.props.infoHash}/files`, {
+            credentials: 'same-origin',
+            mode: 'same-origin',
+            method: "GET",
+        })
+        .then(res => {
+            if (res.status == 200) {
+                return res.json()
+            } else {
+                return Promise.reject(res)
+            }
+        }).then(json => {
+            console.log(json.list);
+            this.setState({
+                files: json.list
+            })
+        }).catch((err) => {
+            console.error(err);
+        });
     }
 
     render() {
@@ -39,6 +80,19 @@ export class Torrent extends React.Component<TorrentProps, TorrentState> {
                 </div>
                 <a className="button" href={`/watch/${this.props.infoHash}`}>Watch</a>
                 <a className="button is-danger" onClick={this.handleClickRemove.bind(this)}>Remove</a>
+                <label className="checkbox">
+                    <input type="checkbox" onChange={this.handleChangeCheckbox.bind(this)} />
+                    Delete files
+                </label>
+                <button className="button" onClick={this.handleClickShowFiles.bind(this)}>Show Files</button>
+                {this.state.showFiles &&
+                    <div>
+                        {this.state.files.map((file, idx) =>
+                            <TorrentFile key={idx} idx={idx} infoHash={this.props.infoHash} {...file}></TorrentFile>
+                        )}
+                    </div>
+                }
+                
             </div>
         );
     }

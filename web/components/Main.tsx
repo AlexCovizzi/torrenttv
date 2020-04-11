@@ -38,12 +38,12 @@ export class Main extends React.Component<{}, MainState> {
         })
     }
 
-    removeTorrent(infoHash: string) {
+    removeTorrent(infoHash: string, deleteFiles: boolean) {
         fetch("/api/v1/session/torrents/" + infoHash, {
             credentials: 'same-origin',
             mode: 'same-origin',
             method: "DELETE",
-            body: JSON.stringify({deleteFiles: false})
+            body: JSON.stringify({deleteFiles: deleteFiles})
         })
         .then(res => {
             if (res.status == 200) {

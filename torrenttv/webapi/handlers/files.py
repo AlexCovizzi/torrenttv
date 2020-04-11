@@ -11,7 +11,7 @@ async def index(req):
 async def show(req):
     session = req.app["data"].session
     info_hash = req.match_info.get("info_hash")
-    file_idx = int(req.match_info.get("idx"))
+    file_idx = int(req.match_info.get("file_idx"))
     _file = _find(session, info_hash, file_idx)
     return web.json_response(_file)
 
@@ -19,7 +19,7 @@ async def show(req):
 async def update(req):
     session = req.app["data"].session
     info_hash = req.match_info.get("info_hash")
-    file_idx = int(req.match_info.get("idx"))
+    file_idx = int(req.match_info.get("file_idx"))
     kwargs = await req.json()
     _file = await _update(session, info_hash, file_idx, **kwargs)
     return web.json_response(_file)
@@ -57,6 +57,7 @@ def _to_dict(_file, _filter=None):
         "name": _file.name,
         "size": _file.size,
         "path": _file.path,
+        "mimeType": _file.mime_type,
         "priority": _file.priority,
     }
     if _filter is not None:

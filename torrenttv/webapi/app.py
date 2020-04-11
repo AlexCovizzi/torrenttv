@@ -1,3 +1,4 @@
+import os
 import asyncio
 from aiohttp import web
 from torrenttv.bittorrent import Session
@@ -13,7 +14,10 @@ class App:
         self._session = Session(loop=self._loop)
         self._torrent_search_engine = TorrentSearchEngine(loop=self._loop)
 
-        self._torrent_search_engine.add_provider("provider.json")
+        provider_dir_path = "resources/providers/"
+        for provider_file_name in os.listdir(provider_dir_path):
+            provider_path = os.path.join(provider_dir_path, provider_file_name)
+            self._torrent_search_engine.add_provider(provider_path)
 
         self._app["data"] = AppData(self._session, self._torrent_search_engine)
 
