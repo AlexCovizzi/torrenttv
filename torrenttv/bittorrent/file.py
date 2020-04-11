@@ -79,6 +79,9 @@ class File:
                     piece_per_second = (
                         self.torrent.download_rate / self.torrent.piece_length
                     )
+                    piece_per_second = (
+                        piece_per_second if piece_per_second > 0.1 else 0.1
+                    )
                     deadline_per_piece = 1000 / piece_per_second
                     deadline = int(deadline_per_piece * (next_piece - piece))
                     self.torrent.set_piece_deadline(
