@@ -1,5 +1,6 @@
 import pytest
 import time
+import asyncio
 from torrenttv.torrentsearchengine import TorrentSearchEngine
 from torrenttv.torrentsearchengine import TorrentProvider
 from torrenttv.torrentsearchengine import TorrentSearchResult, TorrentSearchResultDetails
@@ -52,38 +53,42 @@ def test_remove_provider():
     assert len(providers) == 0
 
 
-def test_search_returns_results():
-    search_engine = TorrentSearchEngine()
-    provider_mock = TorrentProviderMock("test")
-    provider_mock.search = (
-        lambda self, *args, **kwargs: [SearchResult(provider="test", name="name")] * 4
-    )
-    search_engine.add_provider(provider_mock)
-    results = search_engine.search("query")
-    assert len(results) == 4
+@pytest.mark.asyncio
+async def test_search_returns_results(event_loop):
+    async def search_mock(self, *args, **kwargs):
+        for result in [TorrentSearchResult(provider="test", name="name")] * 4:
+            yield result
 
-
-def test_search_returns_results_yielded_before_timeout():
-    def search_mock(self, *args, **kwargs):
-        time.sleep(1)
-        yield SearchResult(provider="test", name="res1")
-        time.sleep(1)
-        yield SearchResult(provider="test", name="res2")
-
-    search_engine = TorrentSearchEngine()
+    search_engine = TorrentSearchEngine(loop=event_loop)
     provider_mock = TorrentProviderMock("test")
     provider_mock.search = search_mock
     search_engine.add_provider(provider_mock)
-    results = search_engine.search("query", timeout=1)
+    results = await search_engine.search("query")
+    assert len(results) == 4
+
+
+@pytest.mark.asyncio
+async def test_search_returns_results_yielded_before_timeout(event_loop):
+    async def search_mock(self, *args, **kwargs):
+        yield TorrentSearchResult(provider="test", name="res1")
+        await asyncio.sleep(0.2, loop=event_loop)
+        yield TorrentSearchResult(provider="test", name="res2")
+
+    search_engine = TorrentSearchEngine(loop=event_loop)
+    provider_mock = TorrentProviderMock("test")
+    provider_mock.search = search_mock
+    search_engine.add_provider(provider_mock)
+    results = await search_engine.search("query", timeout=0.1)
 
     assert len(results) == 1
     assert results[0].name == "res1"
 
 
-def test_search_returns_nothing():
-    search_engine = TorrentSearchEngine()
+@pytest.mark.asyncio
+async def test_search_returns_nothing(event_loop):
+    search_engine = TorrentSearchEngine(loop=event_loop)
     provider_mock = TorrentProviderMock("test")
     search_engine.add_provider(provider_mock)
-    results = search_engine.search("")
+    results = await search_engine.search("")
 
     assert len(results) == 0
