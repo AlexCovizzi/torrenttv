@@ -1,9 +1,8 @@
 import pytest
-import time
 import asyncio
 from torrenttv.torrentsearchengine import TorrentSearchEngine
 from torrenttv.torrentsearchengine import TorrentProvider
-from torrenttv.torrentsearchengine import TorrentSearchResult, TorrentSearchResultDetails
+from torrenttv.torrentsearchengine import TorrentSearchResult
 
 
 class TorrentProviderMock(TorrentProvider):

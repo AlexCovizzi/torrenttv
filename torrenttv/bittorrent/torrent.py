@@ -1,7 +1,8 @@
 import asyncio
+import os
 from python_libtorrent import libtorrent as lt
 from .event_emitter import EventEmitter
-from .events import PieceEvent, PausedEvent, ResumedEvent
+from .events import PieceEvent, PausedEvent, ResumedEvent, ResumeDataEvent
 from .file import File
 
 
@@ -194,6 +195,21 @@ class Torrent(EventEmitter):
         result.raise_err()
 
         return result.ok
+
+    async def save_resume_data(self, path=None):
+        path = path or self.path
+        resume_data_path = os.path.join(path, self.name + ".fastresume")
+
+        self._handle.save_resume_data()
+
+        result = await self.event(ResumeDataEvent(), loop=self.loop)
+        result.raise_err()
+
+        data = result.ok
+        with open(resume_data_path, 'wb') as f:
+            f.write(data)
+
+        return resume_data_path
 
     def get_piece_size(self, piece):
         return self.info.piece_size(piece) if self.info else 0

@@ -93,3 +93,9 @@ class PieceEvent(Event):
 
     def __new__(cls, piece):
         return super().__new__(cls, "piece", discriminant=piece, internal=True)
+
+
+class ResumeDataEvent(Event):
+
+    def __new__(cls):
+        return super().__new__(cls, "resume_data", internal=True)

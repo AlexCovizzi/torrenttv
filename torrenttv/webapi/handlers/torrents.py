@@ -77,11 +77,11 @@ async def _create(session, uri, **kwargs):
         temp.flush()
         link = temp.name
     else:
-        raise web.HTTPBadreq()
+        raise web.HTTPBadRequest()
     try:
         torrent = await session.add_torrent(link, **kwargs)
     except RuntimeError as e:
-        raise web.HTTPBadreq(reason=str(e))
+        raise web.HTTPBadRequest(reason=str(e))
     except AddTorrentError as e:
         raise web.HTTPConflict(reason=str(e))
     return _to_dict(torrent)

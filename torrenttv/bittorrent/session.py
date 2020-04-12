@@ -20,6 +20,7 @@ from .events import (
     PausedEvent,
     ResumedEvent,
     PieceEvent,
+    ResumeDataEvent,
 )
 
 
@@ -43,10 +44,12 @@ class Session(EventEmitter):
             "torrent_paused_alert": self._torrent_paused_alert,
             "torrent_resumed_alert": self._torrent_resumed_alert,
             "read_piece_alert": self._read_piece_alert,
+            "save_resume_data_alert": self._save_resume_data_alert,
+            "save_resume_data_failed_alert": self._save_resume_data_failed_alert,
         }
 
     async def run(self):
-        self._alive = True
+        self._set_alive(True)
 
         self._session.set_alert_notify(
             # we use call_soon_threadsafe since this function
@@ -60,11 +63,20 @@ class Session(EventEmitter):
             for alert in alerts:
                 self._dispatch_alert(alert)
 
-    async def shutdown(self):
-        def _shutdown():
-            self._alive = False
-
-        self.loop.call_soon(_shutdown)
+    async def shutdown(self, resume_data_path=None):
+        # pause all torrents
+        await self.pause()
+        # save resume data of all torrents
+        results = await asyncio.gather(
+            *[
+                torrent.save_resume_data(path=resume_data_path)
+                for torrent in self.get_torrents()
+            ],
+            return_exceptions=True,
+            loop=self.loop
+        )
+        # self.loop.call_soon(self._set_alive(False))
+        return results
 
     async def add_torrent(self, link, **kwargs):
         params = create_add_torrent_params(link, **kwargs)
@@ -187,6 +199,9 @@ class Session(EventEmitter):
     def set_connections_limit(self, limit):
         self._session.set_max_connections(limit)
 
+    def _set_alive(self, alive):
+        self._alive = alive
+
     def _dispatch_alert(self, lt_alert):
         alert_class_name = lt_alert.__class__.__name__
         if alert_class_name not in self._alert_handlers:
@@ -268,6 +283,23 @@ class Session(EventEmitter):
         torrent = self.get_torrent(info_hash)
         if torrent is not None:
             self._loop.call_soon(torrent.emit, PieceEvent(piece), result)
+
+    def _save_resume_data_alert(self, alert):
+        info_hash = alert.handle.info_hash().to_bytes().hex()
+        add_torrent_params = alert.params
+        resume_data_buf = lt.write_resume_data_buf(add_torrent_params)
+        result = Result(ok=resume_data_buf)
+        torrent = self.get_torrent(info_hash)
+        if torrent is not None:
+            self._loop.call_soon(torrent.emit, ResumeDataEvent(), result)
+
+    def _save_resume_data_failed_alert(self, alert):
+        info_hash = alert.handle.info_hash().to_bytes().hex()
+        error = TorrentError(alert.error, info_hash)
+        result = Result(err=error)
+        torrent = self.get_torrent(info_hash)
+        if torrent is not None:
+            self._loop.call_soon(torrent.emit, ResumeDataEvent(), result)
 
 
 class Result:
