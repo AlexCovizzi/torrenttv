@@ -25,10 +25,10 @@ export class SearchResultTable extends React.Component<SearchResultTableProps, S
             <table className="table is-fullwidth is-hoverable">
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Size</th>
-                        <th>Seeds</th>
-                        <th>Download</th>
+                        <th colSpan={4} >Name</th>
+                        <th className="is-norrow has-text-centered">Size</th>
+                        <th className="is-norrow has-text-centered">Seeds</th>
+                        <th className="is-norrow has-text-centered"></th>
                     </tr>
                 </thead>
                 <tbody>

@@ -88,7 +88,7 @@ class TorrentProviderHtmlV1(TorrentProvider):
             # basically we return the same data of the torrent
             return TorrentSearchResultDetails(**data)
 
-        url = Uri(self._config.url, path, scheme="https")
+        url = Uri(path, scheme="https")
 
         res = await fetch(url, headers=self._config.headers, timeout=timeout)
 

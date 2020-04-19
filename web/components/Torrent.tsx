@@ -5,10 +5,13 @@ import { TorrentFile } from "./TorrentFile";
 export interface TorrentProps {
     //onWatch: (infoHash: string) => void;
     onRemove: (infoHash: string, deleteFiles: boolean) => void;
+    onPause: (infoHash: string) => void;
+    onResume: (infoHash: string) => void;
     infoHash: string;
     name: string;
     progress: string;
     pieces: number[];
+    paused: boolean;
 }
 
 
@@ -48,6 +51,18 @@ export class Torrent extends React.Component<TorrentProps, TorrentState> {
         this.setState({ deleteFiles: event.target?.checked });
     }
 
+    handleClickPause(event: React.MouseEvent) {
+        event.preventDefault();
+        let infoHash = this.props.infoHash;
+        this.props.onPause(infoHash);
+    }
+
+    handleClickResume(event: React.MouseEvent) {
+        event.preventDefault();
+        let infoHash = this.props.infoHash;
+        this.props.onResume(infoHash);
+    }
+
     fetchFiles() {
         fetch(`/api/v1/session/torrents/${this.props.infoHash}/files`, {
             credentials: 'same-origin',
@@ -78,6 +93,10 @@ export class Torrent extends React.Component<TorrentProps, TorrentState> {
                 <div title={progressPercentage.toFixed(2) + "%"}>
                     <Pieces pieces={this.props.pieces}></Pieces><br/>
                 </div>
+                {this.props.paused ?
+                    <button className="button" onClick={this.handleClickResume.bind(this)}>Resume</button>
+                    : <button className="button" onClick={this.handleClickPause.bind(this)}>Pause</button>
+                }
                 <a className="button" href={`/watch/${this.props.infoHash}`}>Watch</a>
                 <a className="button is-danger" onClick={this.handleClickRemove.bind(this)}>Remove</a>
                 <label className="checkbox">

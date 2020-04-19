@@ -49,7 +49,7 @@ class Session(EventEmitter):
         }
 
     async def run(self):
-        self._set_alive(True)
+        self._alive = True
 
         self._session.set_alert_notify(
             # we use call_soon_threadsafe since this function
@@ -75,7 +75,9 @@ class Session(EventEmitter):
             return_exceptions=True,
             loop=self.loop
         )
-        # self.loop.call_soon(self._set_alive(False))
+
+        self._alive = False
+
         return results
 
     async def add_torrent(self, link, **kwargs):
@@ -198,9 +200,6 @@ class Session(EventEmitter):
 
     def set_connections_limit(self, limit):
         self._session.set_max_connections(limit)
-
-    def _set_alive(self, alive):
-        self._alive = alive
 
     def _dispatch_alert(self, lt_alert):
         alert_class_name = lt_alert.__class__.__name__

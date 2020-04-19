@@ -21,7 +21,7 @@ export class Main extends React.Component<{}, MainState> {
         this.state = {torrents: [], results: []};
     }
 
-    addTorrent(data: string, encoding: string) {
+    addTorrent(data: string) {
         const uri = data;
         fetch("/api/v1/session/torrents", {
             credentials: 'same-origin',
@@ -73,7 +73,7 @@ export class Main extends React.Component<{}, MainState> {
         });
     }
 
-    updateTorrents() {
+    fetchTorrents() {
         fetch(`/api/v1/session/torrents`, {
             credentials: 'same-origin',
             mode: 'same-origin',
@@ -95,9 +95,25 @@ export class Main extends React.Component<{}, MainState> {
         });
     }
 
+    updateTorrent(infoHash: string, data: any) {
+        fetch(`/api/v1/session/torrents/${infoHash}`, {
+            credentials: 'same-origin',
+            mode: 'same-origin',
+            method: "PATCH",
+            body: JSON.stringify(data)
+        })
+        .then(res => {
+            if (res.status == 200) {
+                return res.json()
+            } else {
+                return Promise.reject(res)
+            }
+        })
+    }
+
     componentDidMount() {
         this.intervalHandle = setInterval(() => {
-            this.updateTorrents();
+            this.fetchTorrents();
         }, 1000);
         console.log("DidMount: "+this.intervalHandle);
     }
@@ -118,7 +134,11 @@ export class Main extends React.Component<{}, MainState> {
                     </div>
                     <div className="column">
                         {this.state.torrents.map((torrent) =>
-                            <Torrent key={torrent.infoHash} {...torrent} onRemove={this.removeTorrent.bind(this)}></Torrent>
+                            <Torrent key={torrent.infoHash} {...torrent}
+                                onRemove={this.removeTorrent.bind(this)}
+                                onPause={(infoHash) => this.updateTorrent(infoHash, {paused: true})}
+                                onResume={(infoHash) => this.updateTorrent(infoHash, {paused: false})}>
+                            </Torrent>
                         )}
                     </div>
                 </div>

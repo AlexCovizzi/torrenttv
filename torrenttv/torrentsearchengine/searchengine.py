@@ -80,7 +80,7 @@ class TorrentSearchEngine:
         provider = self.get_provider(provider_name)
         if not provider:
             return None
-        details = provider.details(item, timeout=timeout)
+        details = await provider.details(item, timeout=timeout)
         return details
 
     def add_provider(self, provider):

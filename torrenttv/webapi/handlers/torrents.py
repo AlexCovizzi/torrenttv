@@ -115,7 +115,7 @@ async def _update(session, info_hash, **kwargs):
         paused = bool(kwargs["paused"])
         if paused and not torrent.paused:
             await torrent.pause()
-        elif not paused and session.paused:
+        elif not paused and torrent.paused:
             await torrent.resume()
         else:
             raise Exception()

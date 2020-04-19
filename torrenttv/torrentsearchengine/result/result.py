@@ -14,7 +14,7 @@ class TorrentSearchResult:
         self._data = kwargs
 
         self._provider = self._data.pop('provider')
-        self._name = self._data.pop('name')
+        self._name = self._data.pop('name', "")
         self._info_url = self._data.pop('info_url', "")
         self._size = self._data.pop('size', "")
         self._seeds = self._data.pop('seeds', -1)
