@@ -4,8 +4,10 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+flake8 = "*"
 pytest = "*"
 pytest-asyncio = "*"
+pyinstaller = "*"
 
 [packages]
 aiohttp = "*"
@@ -15,3 +17,8 @@ beautifulsoup4 = "*"
 
 [requires]
 python_version = "3.6"
+
+[scripts]
+install = "python scripts/install.py"
+test = "python scripts/test.py"
+start = "python scripts/start.py"

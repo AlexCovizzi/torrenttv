@@ -1,4 +1,5 @@
 import os
+import sys
 import asyncio
 from aiohttp import web
 from torrenttv.bittorrent import Session
@@ -29,7 +30,7 @@ class App:
         self._session = Session(loop=self._loop)
         self._torrent_search_engine = TorrentSearchEngine(loop=self._loop)
 
-        provider_dir_path = "resources/providers/"
+        provider_dir_path = self.resource_path("resources/providers/")
         for provider_file_name in os.listdir(provider_dir_path):
             provider_path = os.path.join(provider_dir_path, provider_file_name)
             self._torrent_search_engine.add_provider(provider_path)
@@ -45,7 +46,12 @@ class App:
         self._app["data"] = AppData(self._session, self._torrent_search_engine)
 
         self._app.router.add_routes(routes)
-        self._app.router.add_static("/", "./static/")
+        self._app.router.add_static("/", self.resource_path("public/"))
+
+    def resource_path(self, relative_path):
+        """ Get absolute path to resource, works for dev and for PyInstaller """
+        base_path = getattr(sys, '_MEIPASS', "")
+        return os.path.join(base_path, relative_path)
 
     @property
     def router(self):
