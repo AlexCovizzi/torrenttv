@@ -28,3 +28,11 @@ jobs:
     - name: Test 
       run: |
         pipenv run test
+    - name: Pyinstaller
+      run: |
+        pipenv run pyinstaller torrenttv.spec
+    - name: Archive production artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: app
+          path: dist/app.exe
