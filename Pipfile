@@ -4,16 +4,18 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-flake8 = "*"
-pytest = "*"
-pytest-asyncio = "*"
-pyinstaller = "*"
+pytest = "~=5.4.0"
+pytest-asyncio = "~=0.11.0"
+pyinstaller = "==3.6"
+autopep8 = "~=1.5.0"
+flake8 = "~=3.7.0"
+pylint = "~=2.4.0"
 
 [packages]
-aiohttp = "*"
-jsonschema = "*"
-requests = "*"
-beautifulsoup4 = "*"
+aiohttp = "~=3.6.0"
+jsonschema = "~=3.2.0"
+requests = "~=2.23.0"
+beautifulsoup4 = "~=4.9.0"
 
 [requires]
 python_version = "3.6"
