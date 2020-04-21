@@ -19,9 +19,7 @@ async def show(req):
         else:
             torrent = torrents[0]
 
-    f = [_file for _file in torrent.files if _file.mime_type.startswith("video")][
-        file_idx
-    ]
+    f = [_file for _file in torrent.files][file_idx]
 
     if req.http_range.start is None:
         response = web.Response()
