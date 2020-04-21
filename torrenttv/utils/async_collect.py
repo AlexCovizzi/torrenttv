@@ -14,6 +14,8 @@ async def async_collect(generator, loop=None, timeout=None):
             await asyncio.wait_for(_collect(generator, items), timeout, loop=loop)
         except asyncio.TimeoutError:
             pass
+        except BaseException as e:
+            print("Error: {}".format(e))
     else:
         await _collect(generator, items)
     return items
