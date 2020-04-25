@@ -34,8 +34,7 @@ jobs:
         pipenv run test
     - name: Build web
       run: |
-        cd web
-        npm run build
+        cd web && npm run build
     - name: Pyinstaller
       run: |
         pipenv run pyinstaller torrenttv.spec

@@ -1,4 +1,6 @@
+from aiohttp import web
 from .utils import RouteTableDef
+from torrenttv.mediaplayer import play
 from .handlers import (
     watch_show,
     session_show,
@@ -16,7 +18,21 @@ from .handlers import (
 )
 
 
+def play_(req):
+    session = req.app["data"].session
+    info_hash = req.match_info.get("info_hash", "")
+    file_idx = int(req.match_info.get("file_idx")) or 0
+    torrent = session.get_torrent(info_hash)
+    if torrent is None:
+        raise web.HTTPNotFound()
+    ext = torrent.files[file_idx].ext
+    play("http://localhost:8080/watch/{}/{}".format(info_hash, file_idx), ext=ext)
+    return web.HTTPOk()
+
+
 routes = RouteTableDef()
+
+routes.get("/play/{info_hash}/{file_idx}", play_)
 
 routes.get("/watch", watch_show)
 routes.get("/watch/{info_hash}", watch_show)

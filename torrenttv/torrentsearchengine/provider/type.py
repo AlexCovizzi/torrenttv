@@ -3,6 +3,7 @@ from enum import Enum
 
 class ProviderType(Enum):
     HTML_V1 = "html/v1"
+    NULL = "null"
 
     @staticmethod
     def from_str(s: str):

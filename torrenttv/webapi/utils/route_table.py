@@ -2,12 +2,12 @@ from aiohttp import web, hdrs
 
 
 class RouteTableDef:
-
     """
     Route definition table
     Note: this is the same as aiohttp.web.RouteTableDef,
           but without decorators
     """
+
     def __init__(self):
         self._items = []
 
@@ -30,7 +30,7 @@ class RouteTableDef:
         self._items.append(web.RouteDef(method, path, handler, kwargs))
 
     def head(self, path, handler, **kwargs):
-        return self.route(web.METH_HEAD, path, handler, **kwargs)
+        return self.route(hdrs.METH_HEAD, path, handler, **kwargs)
 
     def get(self, path, handler, **kwargs):
         return self.route(hdrs.METH_GET, path, handler, **kwargs)

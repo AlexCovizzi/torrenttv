@@ -8,27 +8,13 @@ from .torrents import (
     destroy as torrents_destroy,
 )
 from .files import (
-    index as torrent_files_index,
-    show as torrent_files_show,
-    update as torrent_files_update
+    index as torrent_files_index, show as torrent_files_show, update as
+    torrent_files_update
 )
-from .search import (
-    search as search,
-    details as details
-)
+from .search import (search, details)
 
 __all__ = [
-    "watch_show",
-    "session_show",
-    "session_update",
-    "torrents_index",
-    "torrents_show",
-    "torrents_create",
-    "torrents_update",
-    "torrents_destroy",
-    "torrent_files_index",
-    "torrent_files_show",
-    "torrent_files_update",
-    "search",
-    "details"
+    "watch_show", "session_show", "session_update", "torrents_index", "torrents_show",
+    "torrents_create", "torrents_update", "torrents_destroy", "torrent_files_index",
+    "torrent_files_show", "torrent_files_update", "search", "details"
 ]

@@ -1,4 +1,3 @@
-import pytest
 from torrenttv.utils.uri import Uri
 
 

@@ -11,7 +11,7 @@ export interface TorrentFileProps {
 
 
 export interface TorrentFileState {
-    
+
 }
 
 
@@ -20,7 +20,7 @@ export class TorrentFile extends React.Component<TorrentFileProps, TorrentFileSt
     constructor(props: Readonly<TorrentFileProps>) {
         super(props)
 
-        this.state = { };
+        this.state = {};
     }
 
     render() {
@@ -28,7 +28,7 @@ export class TorrentFile extends React.Component<TorrentFileProps, TorrentFileSt
             <div>
                 <h5>{this.props.name}</h5>({this.props.size})
                 {this.props.mimeType.startsWith("video") &&
-                    <a className="button" href={`/watch/${this.props.infoHash}/${this.props.idx}`}>Watch</a>
+                    <a className="button" href={`/play/${this.props.infoHash}/${this.props.idx}`}>Play</a>
                 }
             </div>
         );

@@ -19,7 +19,7 @@ async def show(req):
         else:
             torrent = torrents[0]
 
-    f = [_file for _file in torrent.files][file_idx]
+    f = torrent.files[file_idx]
 
     if req.http_range.start is None:
         response = web.Response()
@@ -31,9 +31,8 @@ async def show(req):
 
     first_byte = req.http_range.start or 0
     last_byte = (
-        req.http_range.stop
-        if req.http_range.stop is not None and req.http_range.stop < f.size
-        else f.size - 1
+        req.http_range.stop if req.http_range.stop is not None
+        and req.http_range.stop < f.size else f.size - 1
     )
     response = web.StreamResponse(status=206)
     response.content_length = last_byte - first_byte + 1

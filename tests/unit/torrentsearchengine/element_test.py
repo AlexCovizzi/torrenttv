@@ -1,5 +1,4 @@
-import pytest
-from torrenttv.torrentsearchengine.provider.html.scraper import NullElement, Element
+from torrenttv.torrentsearchengine.provider.html.scraper import NullElement
 
 
 def test_nullelement_select_returns_empty_list():

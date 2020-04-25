@@ -1,32 +1,26 @@
 import logging
 import asyncio
-from torrenttv.utils import async_collect
+from torrenttv.utils import stream
 from .provider import TorrentProviderLoader, TorrentProvider
-
 
 logger = logging.getLogger(__name__)
 
 
 class TorrentSearchEngine:
+
     def __init__(self, loop=None):
         self._loop = loop or asyncio.get_event_loop()
         self._provider_loader = TorrentProviderLoader()
         self._providers = {}
 
     async def search(
-        self,
-        query: str,
-        category: str = None,
-        limit: int = 0,
-        providers=None,
-        timeout: int = None,
+        self, query: str, limit: int = 0, providers=None, timeout: int = None
     ):
         """
         Search torrents.
 
         Parameters:
             query: str - The query to perform.
-            category: str - The category to search.
             limit: int - The number of results to return.
             providers: List[Union[str, TorrentProvider]] - Providers to use.
             timeout: int - The max number of seconds to wait.
@@ -42,15 +36,11 @@ class TorrentSearchEngine:
             return []
 
         if providers is None:
-            # get only enabled providers
             providers = self.get_providers()
         else:
             # get as TorrentProvider
             providers = [
-                provider
-                if isinstance(provider, TorrentProvider)
-                else self.get_provider(provider)
-                for provider in providers
+                self._ensure_torrent_provider(provider) for provider in providers
             ]
             providers = [provider for provider in providers if provider is not None]
 
@@ -60,7 +50,7 @@ class TorrentSearchEngine:
 
         results = await asyncio.gather(
             *[
-                async_collect(provider.search(query), timeout=timeout, loop=self._loop)
+                stream(provider.search(query)).timeout(timeout).collect()
                 for provider in providers
             ],
             loop=self._loop
@@ -114,3 +104,9 @@ class TorrentSearchEngine:
 
     def _sort_by_seeds(self, items):
         return sorted(items, key=lambda item: item.seeds, reverse=True)
+
+    def _ensure_torrent_provider(self, provider):
+        if isinstance(provider, TorrentProvider):
+            return provider
+        else:
+            return self.get_provider(provider)

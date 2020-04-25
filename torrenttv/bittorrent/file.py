@@ -1,8 +1,10 @@
 import mimetypes
 import weakref
+import os
 
 
 class File:
+
     def __init__(self, torrent, idx):
         self._torrent = weakref.ref(torrent)
         self._idx = idx
@@ -25,6 +27,11 @@ class File:
         if not mtype:
             mtype = "application/octet-stream"
         return mtype
+
+    @property
+    def ext(self):
+        _, f_ext = os.path.splitext(self.path)
+        return f_ext
 
     @property
     def priority(self):
@@ -52,7 +59,7 @@ class File:
             return bytes(0)
         piece, start, length = self.map(offset, size)
         piece, size, buf = await self._torrent().read_piece(piece, download=download)
-        buf = buf[start : start + length + 1]
+        buf = buf[start:start + length + 1]
         return buf
 
     async def stream(self, offset=0, chunk_size=None, buf_size=None):
