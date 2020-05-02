@@ -7,7 +7,7 @@
     "nexturl": ".pagination > ul > li.active + li > a @ href",
     "item": {
         "name": "td.name > a:nth-of-type(2) @ text",
-        "size": "td.size @ text | re: [0-9\\.]+\\s+[A-Z]+",
+        "size": "td.size @ text | regx: [0-9\\.]+\\s+[A-Z]+",
         "time": "td:nth-of-type(5) @ text",
         "seeds": "td.seeds @ text | cvt: int",
         "leeches": "td.leeches @ text | cvt: int",

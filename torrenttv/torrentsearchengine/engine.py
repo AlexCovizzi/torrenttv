@@ -22,7 +22,7 @@ class TorrentSearchEngine:
             ],
             loop=self._loop)
         results = flatten(results)
-        # results = sorted(results, key=lambda item: item.get("seeds", 0), reverse=True)
+        results = sorted(results, key=lambda item: item.get("seeds", 0), reverse=True)
         results = results[:limit]
         return results
 
