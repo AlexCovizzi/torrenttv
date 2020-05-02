@@ -62,7 +62,6 @@ async def test_timeout_raise_err(event_loop):
 
 @pytest.mark.asyncio
 async def test_capture(event_loop):
-
     async def generator_with_exception(exc):
         yield 1
         raise exc

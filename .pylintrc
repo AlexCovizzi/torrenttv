@@ -210,7 +210,7 @@ logging-modules=logging
 bad-functions=map,filter,input
 
 # Good variable names which should always be accepted, separated by a comma
-good-names=i,e,s,_,fd,fp
+good-names=i,e,s,f,_,fd,fp,on
 
 # Bad variable names which should always be refused, separated by a comma
 bad-names=foo,bar,baz,toto,tutu,tata
@@ -248,7 +248,7 @@ const-name-hint=(([A-Z_][A-Z0-9_]*)|(__.*__))$
 attr-rgx=[a-z_][a-z0-9_]{2,30}$
 
 # Naming hint for attribute names
-attr-name-hint=[a-z_][a-z0-9_]{2,30}$
+attr-name-hint=[a-z_][a-z0-9_]{1,30}$
 
 # Regular expression matching correct argument names
 argument-rgx=[a-z_][a-z0-9_]{2,30}$

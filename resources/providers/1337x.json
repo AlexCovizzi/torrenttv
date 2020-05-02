@@ -1,21 +1,19 @@
 {
     "name": "1337x.am",
     "fullname": "1337x",
-    "url": "https://www.1337x.am",
+    "baseurl": "https://www.1337x.am",
     "search": "/search/{query}/1/",
-    "list": {
-        "items": "table.table-list > tbody > tr",
-        "item": {
-            "name":"td.name > a:nth-of-type(2) @ text",
-            "info_url":"td.name > a:nth-of-type(2) @ href",
-            "size": "td.size @ text | re: [0-9\\.]+\\s+[A-Z]+",
-            "time": "td:nth-of-type(5) @ text",
-            "seeds": "td.seeds @ text",
-            "leeches": "td.leeches @ text"
-        },
-        "next": ".pagination > ul > li.active + li > a @ href"
-    },
+    "list": "table.table-list > tbody > tr",
+    "nexturl": ".pagination > ul > li.active + li > a @ href",
     "item": {
+        "name": "td.name > a:nth-of-type(2) @ text",
+        "size": "td.size @ text | re: [0-9\\.]+\\s+[A-Z]+",
+        "time": "td:nth-of-type(5) @ text",
+        "seeds": "td.seeds @ text | cvt: int",
+        "leeches": "td.leeches @ text | cvt: int",
+        "infourl": "td.name > a:nth-of-type(2) @ href"
+    },
+    "info": {
         "link": "a:contains(Magnet) @ href"
     }
 }
