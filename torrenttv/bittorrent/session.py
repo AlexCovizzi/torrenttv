@@ -1,5 +1,5 @@
 import asyncio
-from python_libtorrent import libtorrent as lt
+from python_libtorrent import libtorrent as lt  # pylint: disable=no-name-in-module
 from .add_torrent_params import create_add_torrent_params
 from .session_settings import create_session_settings
 from .event_emitter import EventEmitter
@@ -25,6 +25,7 @@ from .events import (
 
 
 class Session(EventEmitter):
+
     def __init__(self, **kwargs):
         super().__init__()
 
@@ -54,8 +55,7 @@ class Session(EventEmitter):
         self._session.set_alert_notify(
             # we use call_soon_threadsafe since this function
             # is executed in the libtorrent thread
-            lambda: self._loop.call_soon_threadsafe(self.emit, AlertEvent())
-        )
+            lambda: self._loop.call_soon_threadsafe(self.emit, AlertEvent()))
 
         while self._alive:
             await self.event(AlertEvent(), loop=self._loop)
@@ -73,8 +73,7 @@ class Session(EventEmitter):
                 for torrent in self.get_torrents()
             ],
             return_exceptions=True,
-            loop=self.loop
-        )
+            loop=self.loop)
 
         self._alive = False
 
@@ -125,17 +124,19 @@ class Session(EventEmitter):
         self._session.pause()
         # wait paused event on every torrent
         await asyncio.gather(
-            *[torrent.event(PausedEvent()) for torrent in self.get_torrents()],
-            loop=self.loop
-        )
+            *[
+                torrent.event(PausedEvent())
+                for torrent in self.get_torrents()
+                if not torrent.paused
+            ],
+            loop=self.loop)
 
     async def resume(self):
         self._session.resume()
         # wait resumed event on every torrent
         await asyncio.gather(
             *[torrent.event(ResumedEvent()) for torrent in self.get_torrents()],
-            loop=self.loop
-        )
+            loop=self.loop)
 
     def get_torrent(self, info_hash):
         if isinstance(info_hash, bytes):
@@ -302,6 +303,7 @@ class Session(EventEmitter):
 
 
 class Result:
+
     def __init__(self, ok=None, err=None):
         self._ok = ok
         self._err = err

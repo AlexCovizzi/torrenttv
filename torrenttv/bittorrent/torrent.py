@@ -1,6 +1,7 @@
 import asyncio
 import os
-from python_libtorrent import libtorrent as lt
+from python_libtorrent import libtorrent as lt  # pylint: disable=no-name-in-module
+from torrenttv.utils import string_utils
 from .event_emitter import EventEmitter
 from .events import PieceEvent, PausedEvent, ResumedEvent, ResumeDataEvent
 from .file import File
@@ -212,12 +213,22 @@ class Torrent(EventEmitter):
         return resume_data_path
 
     def get_piece_size(self, piece):
-        return self.info.piece_size(piece) if self.info else 0
+        return self._handle.torrent_file().piece_size(
+            piece) if self._handle.torrent_file() else 0
 
     def get_file(self, file_idx):
         if file_idx < 0 or file_idx >= self.num_files:
             raise IndexError()
         return File(self, file_idx)
+
+    def get_file_by_name(self, name, fuzzy_search=False):
+        file_name = name
+        if fuzzy_search:
+            file_name = string_utils.get_best_match(name, [f.name for f in self.files])
+        for _file in self.files:
+            if _file.name.lower() == file_name.lower():
+                return _file
+        raise FileNotFoundError()
 
     def __eq__(self, o):
         if isinstance(o, Torrent):
@@ -229,6 +240,6 @@ class Torrent(EventEmitter):
         elif isinstance(o, bytes):
             return self.info_hash == o.hex()
         elif isinstance(o, str):
-            self.info_hash == o
+            return self.info_hash == o
         else:
             return False

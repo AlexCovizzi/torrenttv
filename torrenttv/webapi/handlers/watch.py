@@ -5,7 +5,8 @@ from aiohttp import web
 async def show(req):
     session = req.app["data"].session
     info_hash = req.match_info.get("info_hash", None)
-    file_idx = int(req.match_info.get("file_idx")) or 0
+    # file_idx = int(req.match_info.get("file_idx")) or 0
+    file_name = req.match_info.get("file_name") or ""
     # if an infohash is provided return the matching torrent
     # otherwise return the first torrent in the session
     if info_hash:
@@ -18,8 +19,7 @@ async def show(req):
             raise web.HTTPNotFound()
         else:
             torrent = torrents[0]
-
-    f = torrent.files[file_idx]
+    f = torrent.get_file_by_name(file_name, fuzzy_search=True)
 
     if req.http_range.start is None:
         response = web.Response()
@@ -31,16 +31,14 @@ async def show(req):
 
     first_byte = req.http_range.start or 0
     last_byte = (
-        req.http_range.stop if req.http_range.stop is not None
-        and req.http_range.stop < f.size else f.size - 1
-    )
+        req.http_range.stop if req.http_range.stop is not None and
+        req.http_range.stop < f.size else f.size - 1)
     response = web.StreamResponse(status=206)
     response.content_length = last_byte - first_byte + 1
     response.content_type = f.mime_type
     response.headers.add("Accept-Ranges", "bytes")
-    response.headers.add(
-        "Content-Range", "bytes %s-%s/%s" % (first_byte, last_byte, f.size)
-    )
+    response.headers.add("Content-Range",
+                         "bytes %s-%s/%s" % (first_byte, last_byte, f.size))
     response.headers.add("Cache-Control", "no-cache")
 
     await response.prepare(req)

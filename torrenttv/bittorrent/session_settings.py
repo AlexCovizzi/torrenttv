@@ -1,4 +1,4 @@
-from python_libtorrent import libtorrent as lt
+from python_libtorrent import libtorrent as lt  # pylint: disable=no-name-in-module
 
 
 def create_session_settings(**kwargs):

@@ -1,7 +1,7 @@
 import asyncio
 from unittest.mock import Mock, call
 import pytest
-from torrenttv.utils.stream import AsyncStream
+from torrenttv.utils.async_utils.stream import AsyncStream
 
 
 async def generator(items, sleep=0, loop=None):
@@ -62,6 +62,7 @@ async def test_timeout_raise_err(event_loop):
 
 @pytest.mark.asyncio
 async def test_capture(event_loop):
+
     async def generator_with_exception(exc):
         yield 1
         raise exc

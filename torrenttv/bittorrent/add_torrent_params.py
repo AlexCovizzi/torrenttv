@@ -1,9 +1,9 @@
-from python_libtorrent import libtorrent as lt
-from torrenttv.utils import get_os_download_path
+from python_libtorrent import libtorrent as lt  # pylint: disable=no-name-in-module
+from torrenttv.utils import compat_utils
 
 
 def create_add_torrent_params(link, **kwargs):
-    save_path = kwargs.get("save_path", get_os_download_path())
+    save_path = kwargs.get("save_path", compat_utils.path.get_download())
 
     if link.endswith(".fastresume"):
         # resume data file path
@@ -18,15 +18,14 @@ def create_add_torrent_params(link, **kwargs):
         # torrent file path
         params = lt.add_torrent_params()
 
-        ti = lt.torrent_info(link)
-        params.ti = ti
+        t_info = lt.torrent_info(link)
+        params.ti = t_info
         # set the info_hash in the params so that it's easely accessible
-        params.info_hash = ti.info_hash()
+        params.info_hash = t_info.info_hash()
 
     params.save_path = save_path
     params.storage_mode = lt.storage_mode_t.storage_mode_sparse
     params.flags |= (
-        lt.torrent_flags.duplicate_is_error | lt.torrent_flags.auto_managed
-    )
+        lt.torrent_flags.duplicate_is_error | lt.torrent_flags.auto_managed)
 
     return params

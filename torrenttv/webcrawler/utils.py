@@ -1,9 +1,9 @@
 import re
-from torrenttv.utils import ensure_str, ensure_int
+from torrenttv.utils import type_utils
 
 
 def format_(value, regx, fmt, cvt, defval):
-    value = ensure_str(value)
+    value = type_utils.ensure_str(value)
     if not fmt:
         # if no format is specified we just return the matched string
         matched = re.match(regx, value)
@@ -14,10 +14,10 @@ def format_(value, regx, fmt, cvt, defval):
         value = re.sub(regx, fmt, value)
 
     if cvt == "int":
-        defval = ensure_int(defval)
-        value = ensure_int(value, defval=defval)
+        defval = type_utils.ensure_int(defval)
+        value = type_utils.ensure_int(value, defval=defval)
     else:
-        defval = ensure_str(defval)
-        value = ensure_str(value, defval=defval)
+        defval = type_utils.ensure_str(defval)
+        value = type_utils.ensure_str(value, defval=defval)
 
     return value

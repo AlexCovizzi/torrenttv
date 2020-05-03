@@ -1,6 +1,6 @@
 from typing import Dict
 from torrenttv.typing import Primitive
-from torrenttv.utils import Uri
+from torrenttv.utils import http_utils
 from torrenttv.webcrawler import WebCrawler
 from .utils import format_search_path
 
@@ -28,7 +28,7 @@ class TorrentSearchProvider:
             self._config.search, query, whitespace_char=self._config.whitespace)
 
         while path:
-            url = Uri(self._config.baseurl, path, scheme="https")
+            url = http_utils.Uri(self._config.baseurl, path, scheme="https")
             document = await self._crawler.fetch(url, headers=self._config.headers)
             element_list = document.select(self._config.list_selector)
             for element in element_list:
@@ -44,7 +44,7 @@ class TorrentSearchProvider:
         if not path:
             # no info is returned
             return info
-        url = Uri(path, scheme="https")
+        url = http_utils.Uri(path, scheme="https")
         document = await self._crawler.fetch(
             url, headers=self._config.headers, timeout=timeout)
         for key, selector in self._config.info_selectors.items():

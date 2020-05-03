@@ -1,6 +1,6 @@
 import logging
 import asyncio
-from torrenttv.utils import stream, flatten
+from torrenttv.utils import async_utils, list_utils, string_utils
 from .loader import TorrentSearchProviderLoader
 
 logger = logging.getLogger(__name__)
@@ -17,13 +17,18 @@ class TorrentSearchEngine:
         providers = self.get_providers()
         results = await asyncio.gather(
             *[
-                stream(provider.search(query)).timeout(timeout).collect()
+                async_utils.stream(provider.search(query)).timeout(timeout).collect()
                 for provider in providers
             ],
             loop=self._loop)
-        results = flatten(results)
-        results = sorted(results, key=lambda item: item.get("seeds", 0), reverse=True)
+        results = list_utils.flatten(results)
+        results = sorted(
+            results,
+            key=lambda item: string_utils.similar(
+                query.lower(), item.get("name", "").lower(), junk_chars=" .-_,+[]()"),
+            reverse=True)
         results = results[:limit]
+        # results = sorted(results, key=lambda item: item.get("seeds", 0), reverse=True)
         return results
 
     async def info(self, item, timeout=None):

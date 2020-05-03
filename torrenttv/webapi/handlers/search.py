@@ -5,7 +5,7 @@ async def search(req):
     search_engine = req.app["data"].torrent_search_engine
     url_query = req.url.query
     query = url_query.get("query", "")
-    limit = int(url_query.get("limit")) if "limit" in url_query else None
+    limit = int(url_query.get("limit")) if "limit" in url_query else 20
     timeout = int(url_query.get("timeout")) if "timeout" in url_query else 5
     results = await _search(search_engine, query, limit=limit, timeout=timeout)
     return web.json_response({"list": results})

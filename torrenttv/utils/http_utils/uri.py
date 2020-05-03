@@ -2,16 +2,15 @@ import urllib
 
 
 class Uri(str):
-    def __new__(
-        cls,
-        *chunks,
-        scheme=None,
-        netloc=None,
-        path=None,
-        qs=None,
-        anchor=None,
-        urlsafe=False
-    ):
+
+    def __new__(cls,
+                *chunks,
+                scheme=None,
+                netloc=None,
+                path=None,
+                qs=None,
+                anchor=None,
+                urlsafe=False):
         """
         Uri
         """
@@ -22,21 +21,18 @@ class Uri(str):
             path=path,
             qs=qs,
             anchor=anchor,
-            urlsafe=False
-        )
+            urlsafe=False)
         txt = urllib.parse.urlunsplit((scheme, netloc, path, qs, anchor))
         return super().__new__(cls, txt)
 
-    def __init__(
-        self,
-        *chunks,
-        scheme=None,
-        netloc=None,
-        path=None,
-        qs=None,
-        anchor=None,
-        urlsafe=False
-    ):
+    def __init__(self,
+                 *chunks,
+                 scheme=None,
+                 netloc=None,
+                 path=None,
+                 qs=None,
+                 anchor=None,
+                 urlsafe=False):
         scheme, netloc, path, qs, anchor = Uri.parse(
             *chunks,
             scheme=scheme,
@@ -44,8 +40,7 @@ class Uri(str):
             path=path,
             qs=qs,
             anchor=anchor,
-            urlsafe=False
-        )
+            urlsafe=False)
         self._scheme = scheme
         self._netloc = netloc
         self._path = path
@@ -82,15 +77,13 @@ class Uri(str):
         }
 
     @staticmethod
-    def parse(
-        *chunks,
-        scheme=None,
-        netloc=None,
-        path=None,
-        qs=None,
-        anchor=None,
-        urlsafe=False
-    ):
+    def parse(*chunks,
+              scheme=None,
+              netloc=None,
+              path=None,
+              qs=None,
+              anchor=None,
+              urlsafe=False):
         # join all chunks
         if len(chunks) == 0:
             uri = ""

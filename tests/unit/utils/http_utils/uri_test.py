@@ -1,4 +1,4 @@
-from torrenttv.utils.uri import Uri
+from torrenttv.utils.http_utils.uri import Uri
 
 
 def test_http_uri():

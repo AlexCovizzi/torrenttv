@@ -18,25 +18,31 @@ from .handlers import (
 )
 
 
-def play_(req):
+async def play_(req):
     session = req.app["data"].session
     info_hash = req.match_info.get("info_hash", "")
-    file_idx = int(req.match_info.get("file_idx")) or 0
+    # file_idx = int(req.match_info.get("file_idx")) or 0
+    file_name = req.match_info.get("file_name") or ""
     torrent = session.get_torrent(info_hash)
     if torrent is None:
         raise web.HTTPNotFound()
-    ext = torrent.files[file_idx].ext
-    play("http://localhost:8080/watch/{}/{}".format(info_hash, file_idx), ext=ext)
+    await play("http://localhost:8080/watch/{}/{}".format(info_hash, file_name))
     return web.HTTPOk()
+
+
+async def home(req):
+    raise web.HTTPFound("/index.html")
 
 
 routes = RouteTableDef()
 
-routes.get("/play/{info_hash}/{file_idx}", play_)
+routes.get("/", home)
+
+routes.get("/play/{info_hash}/{file_name}", play_)
 
 routes.get("/watch", watch_show)
 routes.get("/watch/{info_hash}", watch_show)
-routes.get("/watch/{info_hash}/{file_idx}", watch_show)
+routes.get("/watch/{info_hash}/{file_name}", watch_show)
 
 routes.get("/api/v1/session", session_show)
 routes.post("/api/v1/session", session_update)
@@ -49,9 +55,8 @@ routes.delete("/api/v1/session/torrents/{info_hash}", torrents_destroy)
 
 routes.get("/api/v1/session/torrents/{info_hash}/files", torrent_files_index)
 routes.get("/api/v1/session/torrents/{info_hash}/files/{file_idx}", torrent_files_show)
-routes.post(
-    "/api/v1/session/torrents/{info_hash}/files/{file_idx}", torrent_files_update
-)
+routes.post("/api/v1/session/torrents/{info_hash}/files/{file_idx}",
+            torrent_files_update)
 
 # NOTE: the search api needs revising
 routes.get("/api/v1/search", search)

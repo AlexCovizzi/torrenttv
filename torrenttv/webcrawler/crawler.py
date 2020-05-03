@@ -1,7 +1,7 @@
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 import requests
-from torrenttv.utils import fetch
+from torrenttv.utils import http_utils
 from .element import Element
 
 
@@ -19,7 +19,7 @@ class WebCrawler:
         return self.fetch(url, method="POST", **kwargs)
 
     async def fetch(self, url: str, method="GET", **kwargs) -> Element:
-        res = await fetch(
+        res = await http_utils.fetch(
             url,
             method=method,
             loop=self._loop,

@@ -1,11 +1,12 @@
 import * as React from "react";
+import * as bytes from "bytes";
 
 
 export interface TorrentFileProps {
     infoHash: string;
     idx: string;
     name: string;
-    size: string;
+    size: number;
     mimeType: string;
 }
 
@@ -23,12 +24,16 @@ export class TorrentFile extends React.Component<TorrentFileProps, TorrentFileSt
         this.state = {};
     }
 
+    onClick() {
+        fetch(`/play/${this.props.infoHash}/${this.props.name}`)
+    }
+
     render() {
         return (
             <div>
-                <h5>{this.props.name}</h5>({this.props.size})
+                <h5>{this.props.name} <span>({bytes(this.props.size, { decimalPlaces: 2 })})</span></h5>
                 {this.props.mimeType.startsWith("video") &&
-                    <a className="button" href={`/play/${this.props.infoHash}/${this.props.idx}`}>Play</a>
+                    <a className="button" onClick={this.onClick.bind(this)}>Play</a>
                 }
             </div>
         );
