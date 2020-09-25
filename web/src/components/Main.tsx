@@ -1,7 +1,5 @@
 import * as React from "react";
-import { AddTorrentForm } from "./AddTorrentForm";
 import { Torrent } from "./Torrent";
-import { SearchResult } from "./SearchResult";
 import { SearchForm } from "./SearchForm";
 import { SearchResultTable } from "./SearchResultTable";
 
@@ -9,6 +7,7 @@ import { SearchResultTable } from "./SearchResultTable";
 interface MainState {
     torrents: any[];
     results: any[];
+    uriInput: string;
 }
 
 
@@ -18,7 +17,7 @@ export class Main extends React.Component<{}, MainState> {
 
     constructor(props: Readonly<{}>) {
         super(props);
-        this.state = {torrents: [], results: []};
+        this.state = {torrents: [], results: [], uriInput: ""};
     }
 
     addTorrent(data: string) {
@@ -133,6 +132,7 @@ export class Main extends React.Component<{}, MainState> {
                         <SearchResultTable results={this.state.results} onClick={this.addTorrent.bind(this)}></SearchResultTable>
                     </div>
                     <div className="column">
+                        <input type="text" onChange={(e) => {this.setState({uriInput: e.target?.value})}} /><button onClick={() => this.addTorrent(this.state.uriInput)}>Add torrent</button>
                         {this.state.torrents.map((torrent) =>
                             <Torrent key={torrent.infoHash} {...torrent}
                                 onRemove={this.removeTorrent.bind(this)}

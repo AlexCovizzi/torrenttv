@@ -1,7 +1,7 @@
 {
     "name": "eztv.io",
     "fullname": "EZTV",
-    "baseurl": "https://eztv.io",
+    "baseurl": "https://eztv.yt",
     "search": "/search/{query}",
     "list": "tr.forum_header_border",
     "item": {

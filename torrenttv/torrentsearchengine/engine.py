@@ -17,7 +17,7 @@ class TorrentSearchEngine:
         providers = self.get_providers()
         results = await asyncio.gather(
             *[
-                async_utils.stream(provider.search(query)).timeout(timeout).collect()
+                async_utils.stream(provider.search(query)).timeout(timeout).capture(Exception).collect()
                 for provider in providers
             ],
             loop=self._loop)
