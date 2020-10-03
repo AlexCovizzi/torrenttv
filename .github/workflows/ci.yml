@@ -32,8 +32,8 @@ jobs:
       run: |
         pipenv run build
     - name: Get short SHA
-        run: |
-          echo "::set-env name=GIT_SHA_SHORT::$(git rev-parse --short $GITHUB_SHA)"
+      run: |
+        echo "::set-env name=GIT_SHA_SHORT::$(git rev-parse --short $GITHUB_SHA)"
     - name: Upload
       uses: actions/upload-artifact@v1
       with:
