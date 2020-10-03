@@ -22,7 +22,7 @@ jobs:
         node-version: 10.x
     - name: Set up environment
       run: |
-        echo "::set-env name=GIT_SHA_SHORT::${GITHUB_SHA::7}"
+        echo "::set-env name=GIT_SHA_SHORT::$(git rev-parse --short $GITHUB_SHA)"
         python -m pip install --upgrade pip
         pip install pipenv
     - name: Install
