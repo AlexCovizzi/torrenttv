@@ -13,12 +13,12 @@ module.exports = {
     devtool: "inline-source-map",
 
     // The application entry point
-    entry: "./src/index.tsx",
+    entry: "./web/index.tsx",
 
     // Where to compile the bundle
     // By default the output directory is `dist`
     output: {
-        path: path.resolve(__dirname, "../public"),
+        path: path.resolve(__dirname, "./build/web"),
         filename: "index.bundle.js"
     },
 

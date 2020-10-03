@@ -46,7 +46,7 @@ class App:
         self._app["data"] = AppData(self._session, self._torrent_search_engine)
 
         self._app.router.add_routes(routes)
-        self._app.router.add_static("/", self.resource_path("public/"))
+        self._app.router.add_static("/", self.resource_path("web/"))
 
     def resource_path(self, relative_path):
         """ Get absolute path to resource, works for dev and for PyInstaller """
