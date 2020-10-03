@@ -25,4 +25,4 @@ python_version = "3.6"
 [scripts]
 install = "python scripts/install.py"
 test = "python scripts/test.py"
-start = "python scripts/start.py"
+build = "python scripts/build.py"

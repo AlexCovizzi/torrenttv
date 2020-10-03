@@ -5,7 +5,7 @@ block_cipher = None
 
 a = Analysis(['run.py'],
              binaries=[],
-             datas=[('resources/providers/', 'resources/providers/'), ('public/', 'public/')],
+             datas=[('resources/providers/', 'resources/providers/'), ('build/web', 'web/')],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
