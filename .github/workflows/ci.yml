@@ -34,7 +34,7 @@ jobs:
     - name: Upload
       uses: actions/upload-artifact@v1
       env:
-        GIT_HASH: $(git rev-parse --short "$GITHUB_SHA")
+        GIT_SHA_SHORT: ${GITHUB_SHA:7}
       with:
-        name: TorrentTV-${{ env.GIT_HASH }}
+        name: TorrentTV-${{ env.GIT_SHA_SHORT }}
         path: dist/torrenttv.exe
