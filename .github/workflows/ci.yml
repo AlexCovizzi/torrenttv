@@ -21,7 +21,7 @@ jobs:
       with:
         node-version: 10.x
     - name: Set up environment
-      run:
+      run: |
         echo "::set-env name=GIT_SHA_SHORT::${GITHUB_SHA::7}"
         python -m pip install --upgrade pip
         pip install pipenv
