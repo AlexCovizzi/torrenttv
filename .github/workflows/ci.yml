@@ -31,10 +31,11 @@ jobs:
     - name: Build
       run: |
         pipenv run build
+    - name: Get short SHA
+        run: |
+          echo "::set-env name=GIT_SHA_SHORT::$(git rev-parse --short $GITHUB_SHA)"
     - name: Upload
       uses: actions/upload-artifact@v1
-      env:
-        GIT_SHA_SHORT: ${GITHUB_SHA:7}
       with:
         name: TorrentTV-${{ env.GIT_SHA_SHORT }}
         path: dist/torrenttv.exe
