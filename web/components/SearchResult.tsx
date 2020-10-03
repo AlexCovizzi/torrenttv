@@ -1,5 +1,5 @@
 import * as React from "react";
-import Octicon, {ArrowDown, Play} from '@primer/octicons-react';
+import {ArrowDownIcon, PlayIcon} from '@primer/octicons-react';
 
 
 interface SearchResultProps {
@@ -64,10 +64,10 @@ export class SearchResult extends React.Component<SearchResultProps, SearchResul
                 <td className="is-norrow has-text-centered">{this.props.seeds >= 0 ? this.props.seeds : "-"}</td>
                 <td className="is-norrow has-text-centered">
                     <a className="button is-small" onClick={this.handleClick.bind(this)}>
-                        <span className="icon is-small"><Octicon icon={ArrowDown}></Octicon></span>
+                        <span className="icon is-small"><ArrowDownIcon /></span>
                     </a>
                     <a className="button is-small">
-                        <span className="icon is-small"><Octicon icon={Play}></Octicon></span>
+                        <span className="icon is-small"><PlayIcon /></span>
                     </a>
                 </td>
             </tr>

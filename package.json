@@ -1,7 +1,7 @@
 {
     "name": "torrenttv-web",
     "version": "1.0.0",
-    "description": "",
+    "description": "TorrentTV web frontend",
     "main": "index.js",
     "directories": {
         "test": "tests"
@@ -11,24 +11,24 @@
         "watch": "webpack -w"
     },
     "devDependencies": {
-        "@types/bytes": "^3.1.0",
-        "@types/react": "^16.9.29",
-        "@types/react-dom": "^16.9.5",
-        "bulma": "^0.8.2",
-        "css-loader": "^3.5.2",
-        "file-loader": "^6.0.0",
-        "mini-css-extract-plugin": "^0.9.0",
-        "source-map-loader": "^0.2.4",
-        "style-loader": "^1.1.4",
-        "ts-loader": "^6.2.2",
-        "typescript": "^3.8.3",
-        "webpack": "^4.42.1",
-        "webpack-cli": "^3.3.11"
+        "@types/bytes": "3.1.0",
+        "@types/react": "16.9.50",
+        "@types/react-dom": "16.9.8",
+        "bulma": "0.9.1",
+        "css-loader": "4.3.0",
+        "file-loader": "6.1.0",
+        "mini-css-extract-plugin": "0.11.3",
+        "source-map-loader": "1.1.0",
+        "style-loader": "1.2.1",
+        "ts-loader": "8.0.4",
+        "typescript": "4.0.3",
+        "webpack": "4.44.2",
+        "webpack-cli": "3.3.12"
     },
     "dependencies": {
-        "@primer/octicons-react": "^9.6.0",
-        "bytes": "^3.1.0",
-        "react": "^16.13.1",
-        "react-dom": "^16.13.1"
+        "@primer/octicons-react": "11.0.0",
+        "bytes": "3.1.0",
+        "react": "16.13.1",
+        "react-dom": "16.13.1"
     }
 }
