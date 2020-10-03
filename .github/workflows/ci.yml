@@ -20,10 +20,13 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 10.x
-    - name: Install
-      run: |
+    - name: Set up environment
+      run:
+        echo "::set-env name=GIT_SHA_SHORT::${GITHUB_SHA::7}"
         python -m pip install --upgrade pip
         pip install pipenv
+    - name: Install
+      run: |
         pipenv run install
     - name: Test
       run: |
@@ -31,9 +34,6 @@ jobs:
     - name: Build
       run: |
         pipenv run build
-    - name: Get short SHA
-      run: |
-        echo "::set-env name=GIT_SHA_SHORT::$(git rev-parse --short $GITHUB_SHA)"
     - name: Upload
       uses: actions/upload-artifact@v1
       with:
