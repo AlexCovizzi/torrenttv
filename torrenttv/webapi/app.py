@@ -8,11 +8,11 @@ from .routes import routes
 
 
 class App:
+
     def __init__(self, loop=None, config_path=None):
         self._loop = loop or asyncio.get_event_loop()
         self._config_path = config_path or os.path.join(
-            os.path.expanduser("~"), ".torrenttv"
-        )
+            os.path.expanduser("~"), ".torrenttv")
         self._resume_data_path = os.path.join(self._config_path, "resume_data")
         self._app = web.Application(loop=self._loop, middlewares=[])
 
@@ -38,9 +38,8 @@ class App:
         for resume_data_file_name in os.listdir(self._resume_data_path):
             if not resume_data_file_name.endswith("fastresume"):
                 continue
-            resume_data_file_path = os.path.join(
-                self._resume_data_path, resume_data_file_name
-            )
+            resume_data_file_path = os.path.join(self._resume_data_path,
+                                                 resume_data_file_name)
             self._loop.create_task(self._session.add_torrent(resume_data_file_path))
 
         self._app["data"] = AppData(self._session, self._torrent_search_engine)
@@ -69,16 +68,14 @@ class App:
                 if not resume_data_file_name.endswith("fastresume"):
                     continue
                 try:
-                    resume_data_file_path = os.path.join(
-                        self._resume_data_path, resume_data_file_name
-                    )
+                    resume_data_file_path = os.path.join(self._resume_data_path,
+                                                         resume_data_file_name)
                     os.unlink(resume_data_file_path)
                 except IOError as e:
                     print(e)
             # after the web server is stopped, shutdown the session
             self._loop.run_until_complete(
-                self._session.shutdown(resume_data_path=self._resume_data_path)
-            )
+                self._session.shutdown(resume_data_path=self._resume_data_path))
 
             web._cancel_all_tasks(self._loop)
             self._loop.shutdown_asyncgens()
@@ -87,6 +84,7 @@ class App:
 
 
 class AppData:
+
     def __init__(self, session, torrent_search_engine):
         self._session = session
         self._torrent_search_engine = torrent_search_engine
