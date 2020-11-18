@@ -3,11 +3,12 @@ import sys
 import asyncio
 from aiohttp import web
 from torrenttv.bittorrent import Session
+from torrenttv.mediaplayer import play
 from torrenttv.torrentsearchengine import TorrentSearchEngine
-from .routes import routes
+from .handlers import SearchHandler, SessionHandler, TorrentsHandler, FilesHandler, WatchHandler
 
 
-class App:
+class WebApplication:
 
     def __init__(self, loop=None, config_path=None):
         self._loop = loop or asyncio.get_event_loop()
@@ -30,6 +31,14 @@ class App:
         self._session = Session(loop=self._loop)
         self._torrent_search_engine = TorrentSearchEngine(loop=self._loop)
 
+        self._search_handler = SearchHandler(self._torrent_search_engine)
+        self._session_handler = SessionHandler(self._session)
+        self._torrents_handler = TorrentsHandler(self._session)
+        self._files_handler = FilesHandler(self._session)
+        self._watch_handler = WatchHandler(self._session)
+
+        self._register_routes()
+
         provider_dir_path = self.resource_path("resources/providers/")
         for provider_file_name in os.listdir(provider_dir_path):
             provider_path = os.path.join(provider_dir_path, provider_file_name)
@@ -42,14 +51,12 @@ class App:
                                                  resume_data_file_name)
             self._loop.create_task(self._session.add_torrent(resume_data_file_path))
 
-        self._app["data"] = AppData(self._session, self._torrent_search_engine)
-
-        self._app.router.add_routes(routes)
-        self._app.router.add_static("/", self.resource_path("web/"))
-
     def resource_path(self, relative_path):
         """ Get absolute path to resource, works for dev and for PyInstaller """
         base_path = getattr(sys, '_MEIPASS', "")
+        if not base_path and relative_path == "web/":
+            # TODO: improve this logic because at the moment it sucks
+            relative_path = "build/web/"
         return os.path.join(base_path, relative_path)
 
     @property
@@ -82,17 +89,47 @@ class App:
 
             self._loop.close()
 
+    def _register_routes(self):
+        self._app.add_routes([
+            web.get("/", lambda _: web.HTTPFound("/index.html")),
+            # search
+            web.get("/api/v1/search", self._search_handler.search),
+            web.get("/api/v1/details", self._search_handler.details),
+            # session
+            web.get("/api/v1/session", self._session_handler.show),
+            web.post("/api/v1/session", self._session_handler.update),
+            # torrents
+            web.get("/api/v1/session/torrents", self._torrents_handler.index),
+            web.get("/api/v1/session/torrents/{info_hash}",
+                    self._torrents_handler.show),
+            web.post("/api/v1/session/torrents", self._torrents_handler.create),
+            web.patch("/api/v1/session/torrents/{info_hash}",
+                      self._torrents_handler.update),
+            web.delete("/api/v1/session/torrents/{info_hash}",
+                       self._torrents_handler.destroy),
+            # files
+            web.get("/api/v1/session/torrents/{info_hash}/files",
+                    self._files_handler.index),
+            web.get("/api/v1/session/torrents/{info_hash}/files/{file_idx}",
+                    self._files_handler.show),
+            web.patch("/api/v1/session/torrents/{info_hash}/files/{file_idx}",
+                      self._files_handler.update),
+            # watch
+            web.get("/watch", self._watch_handler.show),
+            web.get("/watch/{info_hash}", self._watch_handler.show),
+            web.get("/watch/{info_hash}/{file_name}", self._watch_handler.show),
+            web.get("/play/{info_hash}/{file_name}", self._play),
+            # static
+            # always keep static route last
+            web.static("/", self.resource_path("web/"))
+        ])
 
-class AppData:
-
-    def __init__(self, session, torrent_search_engine):
-        self._session = session
-        self._torrent_search_engine = torrent_search_engine
-
-    @property
-    def session(self):
-        return self._session
-
-    @property
-    def torrent_search_engine(self):
-        return self._torrent_search_engine
+    async def _play(self, request):
+        info_hash = request.match_info.get("info_hash", "")
+        # file_idx = int(req.match_info.get("file_idx")) or 0
+        file_name = request.match_info.get("file_name") or ""
+        torrent = self._session.get_torrent(info_hash)
+        if torrent is None:
+            raise web.HTTPNotFound()
+        await play("http://localhost:8080/watch/{}/{}".format(info_hash, file_name))
+        return web.HTTPOk()

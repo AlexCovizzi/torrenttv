@@ -1,6 +1,5 @@
-from torrenttv.webapi.app import App
-
+from torrenttv.webapi.app import WebApplication
 
 if __name__ == "__main__":
-    app = App()
+    app = WebApplication()
     app.run()
