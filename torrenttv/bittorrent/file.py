@@ -84,16 +84,13 @@ class File:
                     if next_piece >= self.torrent.num_pieces:
                         break
                     piece_per_second = (
-                        self.torrent.download_rate / self.torrent.piece_length
-                    )
+                        self.torrent.download_rate / self.torrent.piece_length)
                     piece_per_second = (
-                        piece_per_second if piece_per_second > 0.1 else 0.1
-                    )
+                        piece_per_second if piece_per_second > 0.1 else 0.1)
                     deadline_per_piece = 1000 / piece_per_second
                     deadline = int(deadline_per_piece * (next_piece - piece))
                     self.torrent.set_piece_deadline(
-                        next_piece, deadline, alert_when_available=False
-                    )
+                        next_piece, deadline, alert_when_available=False)
             buf = await self.read(offset, chunk_size, download=True)
             offset += len(buf)
             if not buf:

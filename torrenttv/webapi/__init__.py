@@ -1,3 +1,3 @@
-from .app import App
+from .app import WebApplication
 
-__all__ = ['App']
+__all__ = ['WebApplication']
