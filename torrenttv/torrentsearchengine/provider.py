@@ -44,7 +44,7 @@ class TorrentSearchProvider:
         if not path:
             # no info is returned
             return info
-        url = http_utils.Uri(path, scheme="https")
+        url = http_utils.Uri(self._config.baseurl, path, scheme="https")
         document = await self._crawler.fetch(
             url, headers=self._config.headers, timeout=timeout)
         for key, selector in self._config.info_selectors.items():

@@ -9,7 +9,7 @@ interface SearchResultProps {
     size: string;
     seeds: number;
     link: string;
-    infoUrl: string;
+    infourl: string;
 }
 
 
@@ -38,8 +38,8 @@ export class SearchResult extends React.Component<SearchResultProps, SearchResul
 
     fetchLink() {
         let provider = encodeURIComponent(this.props.provider);
-        let infoUrl = encodeURIComponent(this.props.infoUrl);
-        return fetch(`/api/v1/details?provider=${provider}&info_url=${infoUrl}`, {
+        let infoUrl = encodeURIComponent(this.props.infourl);
+        return fetch(`/api/v1/details?provider=${provider}&infourl=${infoUrl}`, {
             credentials: 'same-origin',
             mode: 'same-origin',
             method: "GET",
