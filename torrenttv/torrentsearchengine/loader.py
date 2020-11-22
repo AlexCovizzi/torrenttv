@@ -9,12 +9,15 @@ class TorrentSearchProviderLoader:
     def __init__(self):
         pass
 
-    def load(self, src: str) -> TorrentSearchProvider:
-        if src.startswith('http'):
-            provider = self._load_from_url(src)
-        else:
-            provider = self._load_from_file(src)
-        return provider
+    def load(self, src) -> TorrentSearchProvider:
+        if isinstance(src, dict):
+            return self._load_from_dict(src)
+        elif isinstance(src, str):
+            if src.startswith('http'):
+                return self._load_from_url(src)
+            else:
+                return self._load_from_file(src)
+        raise ValueError("Invalid torrent provider source: " + str(src))
 
     def _load_from_file(self, path: str) -> TorrentSearchProvider:
         try:
