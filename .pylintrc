@@ -68,6 +68,7 @@ disable=
     missing-docstring,
     fixme,
     bad-continuation,
+    redefined-outer-name, # because pytest fixtures
     # disabled by default,
     import-star-module-level,
     old-octal-literal,

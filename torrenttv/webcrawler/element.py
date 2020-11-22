@@ -36,7 +36,7 @@ class Element:
     def to_dict(self) -> dict:
         return {'tag': self._tag}
 
-    def to_string(self) -> dict:
+    def to_string(self) -> str:
         return str(self._tag)
 
     @staticmethod
@@ -54,6 +54,7 @@ class Element:
     def _select(self, selector: Selector, limit: int) -> Iterable["Element"]:
         if not self or not selector:
             return []
+        limit = limit if limit > 0 else None
         pattern = selector.pattern
         try:
             tags = self._tag.select(pattern, limit=limit)

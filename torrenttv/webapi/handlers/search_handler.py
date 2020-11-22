@@ -1,3 +1,4 @@
+import urllib
 from aiohttp import web
 from torrenttv.torrentsearchengine import TorrentSearchEngine
 
@@ -21,7 +22,7 @@ class SearchHandler:
     async def details(self, request: web.Request) -> web.Response:
         url_query = request.url.query
         provider = url_query.get("provider")
-        infourl = url_query.get("infourl")
+        infourl = urllib.parse.unquote(url_query.get("infourl"))
         timeout = int(url_query.get("timeout", SearchHandler.DEFAULT_TIMEOUT))
         search_data = {"provider": provider, "infourl": infourl}
         result = await self._search_engine.info(search_data, timeout=timeout)
