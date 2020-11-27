@@ -33,6 +33,7 @@ async def test_search(event_loop, provider_server: TestHttpServer):
     search_engine.add_provider(provider)
 
     results = await search_engine.search(query)
+
     assert len(results) == 4
     assert results[0]["name"] == "Big Buck Bunny 720p"
     assert results[1]["name"] == "Big Buck Bunny 720p - Extended Cut"
@@ -48,8 +49,8 @@ async def test_details(event_loop, provider_server: TestHttpServer):
                                                 provider_server.port)
     search_engine = TorrentSearchEngine(loop=event_loop)
     search_engine.add_provider(provider)
-
     results = await search_engine.search(query)  # Big Buck Bunny - Extended Cut 720p
-    details = await search_engine.info(results[1])
+
+    details = await search_engine.details(results[1])
 
     assert details["link"] == "magnet:expected_magnet"

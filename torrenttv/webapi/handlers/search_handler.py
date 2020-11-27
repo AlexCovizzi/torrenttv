@@ -25,5 +25,5 @@ class SearchHandler:
         infourl = urllib.parse.unquote(url_query.get("infourl"))
         timeout = int(url_query.get("timeout", SearchHandler.DEFAULT_TIMEOUT))
         search_data = {"provider": provider, "infourl": infourl}
-        result = await self._search_engine.info(search_data, timeout=timeout)
+        result = await self._search_engine.details(search_data, timeout=timeout)
         return web.json_response(result)
