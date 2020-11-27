@@ -14,7 +14,7 @@ def main(*_):
         gui = WebviewGui("TorrentTV", "http://localhost:8080")
         gui.start()
     finally:
-        if not gui.is_closing():
+        if not gui.is_closing() or not gui.is_closed():
             gui.destroy()
         app_queue.put_nowait("graceful_exit")
         gui.wait_closed()
