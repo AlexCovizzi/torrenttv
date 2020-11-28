@@ -1,4 +1,5 @@
 class Event(str):
+
     def __new__(cls, name, discriminant=None, internal=False):
         fullname = name
         if discriminant is not None:
@@ -8,15 +9,6 @@ class Event(str):
         return super().__new__(cls, fullname)
 
 
-class AlertEvent(Event):
-    """
-    emitted a new alert is ready to be popped
-    """
-
-    def __new__(cls):
-        return super().__new__(cls, "alert", internal=True)
-
-
 class AddTorrentEvent(Event):
     """
     emitted when a new torrent has been added or failed to be added
@@ -24,8 +16,7 @@ class AddTorrentEvent(Event):
 
     def __new__(cls, info_hash):
         return super().__new__(
-            cls, "add_torrent", discriminant=info_hash, internal=True
-        )
+            cls, "add_torrent", discriminant=info_hash, internal=True)
 
 
 class RemoveTorrentEvent(Event):
@@ -35,8 +26,7 @@ class RemoveTorrentEvent(Event):
 
     def __new__(cls, info_hash):
         return super().__new__(
-            cls, "remove_torrent", discriminant=info_hash, internal=True
-        )
+            cls, "remove_torrent", discriminant=info_hash, internal=True)
 
 
 class DeleteFilesEvent(Event):
@@ -46,8 +36,7 @@ class DeleteFilesEvent(Event):
 
     def __new__(cls, info_hash):
         return super().__new__(
-            cls, "delete_files", discriminant=info_hash, internal=True
-        )
+            cls, "delete_files", discriminant=info_hash, internal=True)
 
 
 class ErrorEvent(Event):

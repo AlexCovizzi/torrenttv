@@ -11,7 +11,6 @@ from .exceptions import (
     ReadPieceError,
 )
 from .events import (
-    AlertEvent,
     AddTorrentEvent,
     RemoveTorrentEvent,
     DeleteFilesEvent,
@@ -53,18 +52,9 @@ class Session(EventEmitter):
         self._alive = True
 
         self._session.set_alert_notify(
-            # we use call_soon_threadsafe since this function
-            # is executed in the libtorrent thread
-            lambda: self._loop.call_soon_threadsafe(self.emit, AlertEvent()))
-
-        while self._alive:
-            await self.event(AlertEvent(), loop=self._loop)
-            alerts = self._session.pop_alerts()
-            for alert in alerts:
-                self._dispatch_alert(alert)
+            lambda: self._loop.call_soon_threadsafe(self._pop_alerts))
 
     async def shutdown(self, resume_data_path=None):
-        # pause all torrents
         await self.pause()
         # save resume data of all torrents
         results = await asyncio.gather(
@@ -95,7 +85,7 @@ class Session(EventEmitter):
         return torrent
 
     async def remove_torrent(self, torrent, delete_files=False):
-        handle = torrent._handle
+        handle = torrent._handle  # pylint: disable=protected-access
         delete_files_flag = 1 if delete_files else 0
 
         self._session.remove_torrent(handle, delete_files_flag)
@@ -201,6 +191,12 @@ class Session(EventEmitter):
 
     def set_connections_limit(self, limit):
         self._session.set_max_connections(limit)
+
+    def _pop_alerts(self):
+        if self._alive:
+            alerts = self._session.pop_alerts()
+            for alert in alerts:
+                self._dispatch_alert(alert)
 
     def _dispatch_alert(self, lt_alert):
         alert_class_name = lt_alert.__class__.__name__

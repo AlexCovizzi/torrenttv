@@ -3,7 +3,7 @@
 block_cipher = None
 
 
-a = Analysis(['run.py'],
+a = Analysis(['main.py'],
              binaries=[],
              datas=[('resources/providers/', 'resources/providers/'), ('build/web', 'web/')],
              hiddenimports=[],
@@ -29,4 +29,4 @@ exe = EXE(pyz,
           upx=True,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=True )
+          console=False )

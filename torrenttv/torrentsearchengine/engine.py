@@ -17,8 +17,8 @@ class TorrentSearchEngine:
         providers = self.get_providers()
         results = await asyncio.gather(
             *[
-                async_utils.stream(provider.search(query)).timeout(timeout).capture(Exception).collect()
-                for provider in providers
+                async_utils.stream(provider.search(query)).timeout(timeout).capture(
+                    Exception).collect() for provider in providers
             ],
             loop=self._loop)
         results = list_utils.flatten(results)
@@ -31,7 +31,7 @@ class TorrentSearchEngine:
         # results = sorted(results, key=lambda item: item.get("seeds", 0), reverse=True)
         return results
 
-    async def info(self, item, timeout=None):
+    async def details(self, item, timeout=None):
         provider_name = item.get("provider")
         if not self.has_provider(provider_name):
             return {}
