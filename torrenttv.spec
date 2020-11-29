@@ -5,9 +5,9 @@ block_cipher = None
 
 a = Analysis(['main.py'],
              binaries=[],
-             datas=[('resources/providers/', 'resources/providers/'), ('build/web', 'web/')],
+             datas=[('resources/', 'resources/'), ('build/web', 'web/')],
              hiddenimports=[],
-             hookspath=[],
+             hookspath=['./pyinstaller_hooks/'],
              runtime_hooks=[],
              excludes=[],
              win_no_prefer_redirects=False,
@@ -29,4 +29,4 @@ exe = EXE(pyz,
           upx=True,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=False )
+          console=True )

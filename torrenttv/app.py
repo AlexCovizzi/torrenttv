@@ -1,32 +1,66 @@
+import os
+import sys
 import asyncio
 import threading
+import multiprocessing
+import webbrowser
 from .bittorrent import Session
 from .torrentsearchengine import TorrentSearchEngine
 from .webapi import WebApplication
 from .webviewgui import WebviewGui
+from .icon import Icon
 
 
 def run_app(**kwargs):
-    name = kwargs.get("name", "TorrentTV")
+    title = kwargs.get("title", "TorrentTV")
     host = kwargs.get("host", "localhost")
     port = kwargs.get("port", 8080)
+
     try:
         backend_loop = asyncio.new_event_loop()
         backend_queue = asyncio.Queue(loop=backend_loop)
         backend_thread = threading.Thread(
             target=_run_backend, args=(backend_loop, backend_queue), kwargs=kwargs)
-        gui = WebviewGui(name, "http://{}:{}".format(host, port))
+
+        gui_queue = multiprocessing.Queue()
+        gui_process = multiprocessing.Process(target=_run_gui, args=(gui_queue,))
+
+        icon = Icon(
+            title,
+            os.path.join(getattr(sys, '_MEIPASS', ""), "resources/images/icon.png"))
+        icon.add_menu_item("Open", lambda: gui_queue.put("open"))
+        icon.add_menu_item("Exit", icon.stop)
 
         backend_thread.start()
-        gui.start()
+        gui_process.start()
+        icon.run()
     finally:
-        if not gui.is_closing() or not gui.is_closed():
-            gui.destroy()
+        gui_queue.put("exit")
         backend_loop.call_soon_threadsafe(backend_queue.put_nowait, "graceful_shutdown")
-        gui.wait_closed()
+        gui_process.join()
         backend_thread.join()
         backend_loop.shutdown_asyncgens()
         backend_loop.close()
+
+
+def _run_gui(queue: multiprocessing.Queue):
+    title = "TorrentTV"
+    host = "localhost"
+    port = 8080
+
+    is_running = True
+
+    gui = WebviewGui(title, "http://{}:{}".format(host, port))
+    gui.open()
+
+    while is_running:
+        event = queue.get()
+
+        if event == "open":
+            gui.open()
+        elif event == "exit":
+            gui.close()
+            is_running = False
 
 
 def _run_backend(loop: asyncio.AbstractEventLoop, queue: asyncio.Queue, **kwargs):
