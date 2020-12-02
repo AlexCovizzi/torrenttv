@@ -35,9 +35,8 @@ def run_app(**kwargs):
         gui_process.start()
         icon.run()
     finally:
-        gui_queue.put("exit")
+        gui_process.terminate()
         backend_loop.call_soon_threadsafe(backend_queue.put_nowait, "graceful_shutdown")
-        gui_process.join()
         backend_thread.join()
         backend_loop.shutdown_asyncgens()
         backend_loop.close()

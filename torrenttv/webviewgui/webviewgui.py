@@ -15,21 +15,16 @@ class WebviewGui:
         if len(webview.windows) == 0:
             self._window = webview.create_window(
                 self._title, url=self._url, width=self._width, height=self._height)
-        webview.start()
+        webview.start(func=self._on_start)
 
     def close(self):
-        if not self.is_closed():
-            if self.is_closing():
-                self.wait_closed()
-            else:
-                self._window.destroy()
-                self.wait_closed()
+        try:
+            self._window.destroy()
+        except KeyError:
+            # window is already closed
+            pass
 
-    def is_closed(self):
-        return self._window.closed.is_set()
-
-    def is_closing(self):
-        return self._window.closing.is_set()
-
-    def wait_closed(self):
-        return self._window.closed.wait()
+    def _on_start(self):
+        self._window.loaded.wait()
+        self._window.hide()
+        self._window.show()

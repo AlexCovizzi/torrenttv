@@ -4,28 +4,28 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+flake8 = "==3.7.9"
+pyinstaller = "==4.1"
+pylint = "==2.5.0"
 pytest = "==5.4.1"
 pytest-asyncio = "==0.11.0"
-pyinstaller = "==4.1"
-flake8 = "==3.7.9"
-pylint = "==2.5.0"
 yapf = "==0.30.0"
 
 [packages]
 aiohttp = "==3.6.2"
-requests = "==2.23.0"
-beautifulsoup4 = "==4.9.0"
 async-timeout = "==3.0.1"
-pywin32 = {version = "==227",sys_platform = "=='win32'"}
-pywinauto = "==0.6.8"
-pywebview = "==3.3.5"
-pystray = "==0.17.1"
+beautifulsoup4 = "==4.9.0"
 pillow = "==8.0.1"
+pystray = "==0.17.1"
+pywebview = "==3.3.5"
+pywin32 = {version = "==227", sys_platform = "=='win32'"}
+pywinauto = "==0.6.8"
+requests = "==2.23.0"
 
 [requires]
 python_version = "3.6"
 
 [scripts]
+build = "python scripts/build.py"
 install = "python scripts/install.py"
 test = "python scripts/test.py"
-build = "python scripts/build.py"
