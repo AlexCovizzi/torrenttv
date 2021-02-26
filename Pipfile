@@ -12,7 +12,7 @@ pylint = "==2.5.0"
 yapf = "==0.30.0"
 
 [packages]
-aiohttp = "==3.6.2"
+aiohttp = "==3.7.4"
 requests = "==2.23.0"
 beautifulsoup4 = "==4.9.0"
 async-timeout = "==3.0.1"
